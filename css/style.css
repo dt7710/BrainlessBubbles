@@ -1,0 +1,41 @@
+body {
+    margin: 0;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+}
+
+#game-ui {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 10;
+}
+
+#score {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+#buttons-container {
+    display: flex;
+    gap: 10px;
+}
+
+.color-button {
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: transform 0.1s;
+}
+
+.color-button:active {
+    transform: scale(0.95);
+}
+
+#gameCanvas {
+    display: block;
+}

@@ -1,0 +1,45 @@
+# Node.js
+node_modules/
+npm-debug.log
+package-lock.json
+package.json
+
+# WebStorm/IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Build and dependency directories
+dist/
+build/
+out/
+.cache/
+
+# Environment files
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Debug logs
+debug.log
+yarn-error.log
+
+# Editor directories and files
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
