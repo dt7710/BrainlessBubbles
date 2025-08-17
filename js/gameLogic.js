@@ -1,5 +1,5 @@
 // Game Logic Module
-const {Engine, Render, Runner, Bodies, Body, Sleeping, Composite, Events, Query, Vertices} = Matter;
+const {Engine, Render, Runner, Bodies, Body, Sleeping, Composite, Events, Query, Vertices, Mouse, MouseConstraint} = Matter;
 
 const config = {
     colors: ['#FF5252', '#4CAF50', '#2196F3', '#FFC107', '#9C27B0'],
@@ -188,6 +188,37 @@ function initGameLogic() {
     for (let i = 0; i < config.initialCount; i++) {
         createRandomShape();
     }
+    // Add mouse constraint for click/touch detection
+    const canvas = document.getElementById('gameCanvas');
+    const mouse = Mouse.create(canvas);
+    const mouseConstraint = MouseConstraint.create(engine, {
+        mouse: mouse,
+        constraint: {
+            stiffness: 0.2,
+            render: { visible: false }
+        }
+    });
+    Composite.add(world, mouseConstraint);
+    Events.on(mouseConstraint, 'mousedown', function(event) {
+        if (event.body && event.body.label && event.body.label !== 'ground') {
+            // Disarm all, then arm only this shape's color and type
+            gameState.armedButtons = [];
+            armButton(event.body.shapeColor);
+            armButton(event.body.label);
+            window.chosenShape = event.body;
+            if (typeof window.updateArmedInfo === 'function') window.updateArmedInfo();
+        }
+    });
+    // Touch support
+    Events.on(mouseConstraint, 'touchstart', function(event) {
+        if (event.body && event.body.label && event.body.label !== 'ground') {
+            gameState.armedButtons = [];
+            armButton(event.body.shapeColor);
+            armButton(event.body.label);
+            window.chosenShape = event.body;
+            if (typeof window.updateArmedInfo === 'function') window.updateArmedInfo();
+        }
+    });
     const runner = Runner.create();
     Runner.run(runner, engine);
 }

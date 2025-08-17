@@ -4,8 +4,13 @@ body {
     font-family: 'Segoe UI', Arial, sans-serif;
     background: linear-gradient(120deg, #f4f4f4 0%, #e0e7ff 100%);
     min-height: 100vh;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    display: block;
 }
 
+/* Center UI above canvas */
 #game-ui {
     position: absolute;
     top: 0;
@@ -64,26 +69,25 @@ body {
 }
 
 /* Responsive canvas with aspect ratio 4:5 (800x1000) */
+/* Responsive canvas: fill screen, keep aspect ratio */
+/* Responsive canvas: fill screen, keep aspect ratio, stick to top, with padding */
 #gameCanvas {
     display: block;
-    margin: 0 auto;
+    margin: 24px auto 24px auto;
     background: #fff;
     border-radius: 18px;
     box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-    width: 100%;
-    height: auto;
     aspect-ratio: 4/5;
-    max-width: 800px;
-    max-height: 1000px;
-    min-width: 200px;
-    min-height: 250px;
+    width: calc(100vw - 32px);
+    height: auto;
+    /* max-width removed to allow full scaling */
+    max-height: calc(100vh - 48px);
+    object-fit: contain;
 }
 
 @media (max-width: 900px) {
     #gameCanvas {
-        max-width: 95vw;
-        min-width: 160px;
-        min-height: 200px;
+        border-radius: 10px;
     }
     #game-ui {
         padding-top: 8px;
@@ -100,9 +104,7 @@ body {
 
 @media (max-width: 600px) {
     #gameCanvas {
-        max-width: 98vw;
-        min-width: 120px;
-        min-height: 150px;
+        border-radius: 6px;
     }
     #game-ui {
         padding-top: 4px;

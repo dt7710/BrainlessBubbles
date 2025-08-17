@@ -1,3 +1,5 @@
+// Expose for gameLogic.js
+window.updateArmedInfo = updateArmedInfo;
 // Game UI Module
 
 import { config, armButton, initGameLogic, engine, gameState } from './gameLogic.js';
@@ -8,7 +10,7 @@ function initUI() {
     buttonsContainer.innerHTML = '';
     const armedInfo = document.createElement('div');
     armedInfo.id = 'armed-info';
-    armedInfo.textContent = 'Armed: None';
+    armedInfo.textContent = 'Current: None';
     buttonsContainer.appendChild(armedInfo);
     updateArmedInfo();
 }
@@ -17,7 +19,7 @@ function updateArmedInfo() {
     const armedInfo = document.getElementById('armed-info');
     if (!armedInfo) return;
     if (!window.chosenShape) {
-        armedInfo.innerHTML = '<span>Armed: None</span>';
+        armedInfo.innerHTML = '<span>Current: None</span>';
     } else {
         // Show a visual representation of the chosen shape
         const shape = window.chosenShape;
@@ -41,21 +43,18 @@ function updateArmedInfo() {
             default:
                 shapeHtml = `<div style="width:40px;height:40px;background:${shape.shapeColor};display:inline-block;"></div>`;
         }
-        armedInfo.innerHTML = `<span>Armed:</span> ${shapeHtml} <span style="margin-left:8px;">${shape.label}</span>`;
+        armedInfo.innerHTML = `<span>Current:</span> ${shapeHtml}`;
     }
 }
 
 // Listen for shape clicks
 function setupShapeClick() {
     const canvas = document.getElementById('gameCanvas');
-    canvas.addEventListener('click', function(e) {
+    function handlePointer(x, y) {
         const rect = canvas.getBoundingClientRect();
-        // Scale mouse coordinates to canvas internal size
-        const scaleX = canvas.width / rect.width;
-        const scaleY = canvas.height / rect.height;
-        const mouseX = (e.clientX - rect.left) * scaleX;
-        const mouseY = (e.clientY - rect.top) * scaleY;
-        // Find shape under mouse
+        // Always map to 800x1000 Matter.js coordinates
+        const mouseX = (x - rect.left) * (800 / rect.width);
+        const mouseY = (y - rect.top) * (1000 / rect.height);
         const { Mouse, Query } = Matter;
         const mouse = Mouse.create(canvas);
         mouse.position.x = mouseX;
@@ -64,12 +63,22 @@ function setupShapeClick() {
         const found = Query.point(bodies, mouse.position);
         if (found.length > 0) {
             const shape = found[0];
-            // Disarm all, then arm only this shape's color and type
             if (window.gameState) window.gameState.armedButtons = [];
             armButton(shape.shapeColor);
             armButton(shape.label);
             window.chosenShape = shape;
             updateArmedInfo();
+        }
+    }
+
+    canvas.addEventListener('click', function(e) {
+        handlePointer(e.clientX, e.clientY);
+    });
+
+    canvas.addEventListener('touchstart', function(e) {
+        if (e.touches.length > 0) {
+            const touch = e.touches[0];
+            handlePointer(touch.clientX, touch.clientY);
         }
     });
 }
