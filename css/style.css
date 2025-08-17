@@ -5,7 +5,7 @@ body {
 }
 
 #game-ui {
-    position: absolute;
+    /*position: absolute;*/
     top: 10px;
     left: 10px;
     z-index: 10;
@@ -33,7 +33,24 @@ body {
 }
 
 .color-button:active {
-    transform: scale(0.95);
+    transform: translateY(2px);
+    box-shadow:
+            0 0 0 3px white, /* Outer white border */
+            0 0 0 6px currentColor; /* Colored glow */
+}
+
+.color-button {
+    /* Your existing styles */
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.color-button.armed {
+    transform: translateY(2px);
+    box-shadow:
+            0 0 0 3px white, /* Outer white border */
+            0 0 0 6px currentColor; /* Colored glow */
 }
 
 #gameCanvas {

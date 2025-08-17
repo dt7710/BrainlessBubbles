@@ -26,7 +26,7 @@ Render.run(render);
 //////////////////////////////////////////
 const config = {
     colors: ['#FF5252', '#4CAF50', '#2196F3', '#FFC107', '#9C27B0'],
-    shapes: ['circle', 'rectangle', 'triangle'],
+    shapes: ['circle', 'rectangle', 'pentagon', 'hexagon'],
     initialCount: 300,
     minSize: 20,
     maxSize: 25,
@@ -74,7 +74,7 @@ function initUI() {
         button.style.backgroundColor = color;
 
         button.addEventListener('click', () => {
-            handleButtonPress(color);
+            handleButtonPress(color, button); // Pass button element
         });
 
         buttonsContainer.appendChild(button);
@@ -82,8 +82,8 @@ function initUI() {
 }
 
 // Handle button presses
-function handleButtonPress(color) {
-    // If button is already armed, disarm it
+function handleButtonPress(color, buttonElement) {
+    // Toggle armed state
     const index = gameState.armedButtons.indexOf(color);
     if (index > -1) {
         gameState.armedButtons.splice(index, 1);
@@ -141,10 +141,66 @@ function createRandomShape() {
                 shapeColor: color
             });
             break;
+        case 'pentagon':
+            shape = Bodies.polygon(x, config.spawnHeight, 5, size, {
+                restitution: 0.5,
+                friction: 0.04,
+                render: { fillStyle: color },
+                label: shapeType,
+                shapeColor: color,
+                chamfer: { radius: 2 } // Soften edges slightly
+            });
+            break;
+        case 'hexagon':
+            shape = Bodies.polygon(x, config.spawnHeight, 6, size, {
+                restitution: 0.45,
+                friction: 0.035,
+                render: { fillStyle: color },
+                label: shapeType,
+                shapeColor: color,
+                chamfer: { radius: 1 }
+            });
+            break;
+        case 'star':
+            // Create star using two overlapping polygons
+            shape = Bodies.fromVertices(x, config.spawnHeight, [
+                Matter.Vertices.fromPath(this.getStarPath(size))
+            ], {
+                restitution: 0.4,
+                friction: 0.06,
+                render: { fillStyle: color },
+                label: shapeType,
+                shapeColor: color,
+                chamfer: { radius: 1 }
+            }, true); // Flag to remove duplicate points
+            break;
     }
     gameState.activeShapes.push(shape);
     Composite.add(world, shape);
     return shape;
+}
+
+function getStarPath(size) {
+    const spikes = 5;
+    const outerRadius = size;
+    const innerRadius = size * 0.4;
+    let path = '';
+
+    for (let i = 0; i < spikes; i++) {
+        // Outer point
+        const outerAngle = (Math.PI * 2 * i) / spikes - Math.PI/2;
+        path += (i === 0 ? 'M' : 'L') +
+            (Math.cos(outerAngle) * outerRadius + ',' +
+                (Math.sin(outerAngle) * outerRadius));
+
+        // Inner point
+        const innerAngle = outerAngle + Math.PI / spikes;
+        path += 'L' +
+            (Math.cos(innerAngle) * innerRadius + ',' +
+                (Math.sin(innerAngle) * innerRadius));
+    }
+
+    return path + 'Z';
 }
 
 // Handle ground collisions
