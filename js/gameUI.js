@@ -50,8 +50,11 @@ function setupShapeClick() {
     const canvas = document.getElementById('gameCanvas');
     canvas.addEventListener('click', function(e) {
         const rect = canvas.getBoundingClientRect();
-        const mouseX = e.clientX - rect.left;
-        const mouseY = e.clientY - rect.top;
+        // Scale mouse coordinates to canvas internal size
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        const mouseX = (e.clientX - rect.left) * scaleX;
+        const mouseY = (e.clientY - rect.top) * scaleY;
         // Find shape under mouse
         const { Mouse, Query } = Matter;
         const mouse = Mouse.create(canvas);
