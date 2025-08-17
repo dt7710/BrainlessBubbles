@@ -166,13 +166,13 @@ function setupCollisionDetection() {
     });
 }
 
-function armButton(color) {
-    const index = gameState.armedButtons.indexOf(color);
+function armButton(value) {
+    const index = gameState.armedButtons.indexOf(value);
     if (index > -1) {
         gameState.armedButtons.splice(index, 1);
         return;
     }
-    gameState.armedButtons.push(color);
+    gameState.armedButtons.push(value);
     if (gameState.armedButtons.length > config.maxButtons) {
         gameState.armedButtons.shift();
     }
