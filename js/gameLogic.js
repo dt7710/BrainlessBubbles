@@ -3,7 +3,7 @@ const {Engine, Render, Runner, Bodies, Body, Sleeping, Composite, Events, Query,
 
 const config = {
     colors: ['#FF5252', '#4CAF50', '#2196F3', '#FFC107', '#9C27B0'],
-    shapes: ['circle', 'rectangle', 'pentagon', 'hexagon'],
+    shapes: ['circle', 'square', 'pentagon', 'hexagon'],
     initialCount: 300,
     minSize: 20,
     maxSize: 25,
@@ -71,7 +71,7 @@ function createRandomShape() {
                 shapeColor: color
             });
             break;
-        case 'rectangle':
+        case 'square':
             shape = Bodies.rectangle(x, config.spawnHeight, size * 2, size * 2, {
                 restitution: 0.4,
                 friction: 0.05,
@@ -151,7 +151,9 @@ function handleCollisions(pairs) {
             (pair.bodyB === ground && pair.bodyA.label)) {
             const shape = pair.bodyA === ground ? pair.bodyB : pair.bodyA;
             const color = shape.shapeColor;
-            if (gameState.armedButtons.includes(color)) {
+            const type = shape.label;
+            // Destroy if color or type is armed
+            if (gameState.armedButtons.includes(color) || gameState.armedButtons.includes(type)) {
                 destroyShape(shape);
             }
         }
